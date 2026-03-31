@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
+
 import session from "express-session";
 import MongoStore from "connect-mongo";
 

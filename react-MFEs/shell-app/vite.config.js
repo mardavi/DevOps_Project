@@ -11,7 +11,7 @@ export default defineConfig({
         projects_app: "http://localhost:5174/assets/remoteEntry.js",
         ai_review_app: "http://localhost:5175/assets/remoteEntry.js",
       },
-      shared: ["react", "react-dom", "react-bootstrap", "react-router-dom"],
+      shared: ["react", "react-dom", "react-bootstrap", "react-router-dom", "@apollo/client",],
     }),
   ],
   server: {

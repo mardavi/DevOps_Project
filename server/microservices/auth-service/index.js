@@ -1,8 +1,10 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ApolloServer } from "@apollo/server";
+import { buildSubgraphSchema } from "@apollo/subgraph";
 import { expressMiddleware } from "@as-integrations/express5";
 
 import { connectDB } from "./config/db.js";
@@ -12,13 +14,18 @@ import { resolvers } from "./graphql/resolvers.js";
 import User from "./models/user.js";
 
 const app = express();
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.AUTH_PORT || 4001;
 
 await connectDB();
 
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema: buildSubgraphSchema([
+        {
+            typeDefs,
+            resolvers,
+        },
+    ]),
+    introspection: true,
 });
 
 await server.start();
