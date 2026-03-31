@@ -34,7 +34,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { Form, Button, Card, Alert, Spinner } from "react-bootstrap";
-import { REGISTER_USER, GET_CURRENT_USER } from "../graphql/auth";
+import { REGISTER_USER } from "../graphql/auth";
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -42,9 +42,7 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const [registerUser, { loading, error }] = useMutation(REGISTER_USER, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-  });
+  const [registerUser, { loading, error }] = useMutation(REGISTER_USER);
 
   const submitHandler = async (e) => {
     e.preventDefault();

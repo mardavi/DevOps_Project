@@ -58,22 +58,22 @@
 // export default App;
 
 import { lazy, Suspense } from "react";
-import { Container, Navbar, Nav, Spinner } from "react-bootstrap";
+import { Container, Navbar, Nav, Spinner, Button } from "react-bootstrap";
 import { Routes, Route, Link } from "react-router-dom";
+import { useQuery, useMutation } from "@apollo/client/react";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import { useQuery } from "@apollo/client/react";
-import { GET_CURRENT_USER } from "./graphql/auth";
-import { LOGOUT_USER } from "./graphql/auth";
-import { useMutation } from "@apollo/client/react";
-import { Button } from "react-bootstrap";
+import { GET_CURRENT_USER, LOGOUT_USER } from "./graphql/auth";
 
 const ProjectsApp = lazy(() => import("projects_app/ProjectsApp"));
 const AIReviewApp = lazy(() => import("ai_review_app/AIReviewApp"));
 
 function App() {
-  const { data, loading } = useQuery(GET_CURRENT_USER);
+  const { data } = useQuery(GET_CURRENT_USER, {
+    fetchPolicy: "network-only",
+  });
+
   const [logoutUser] = useMutation(LOGOUT_USER, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
   });
@@ -85,6 +85,7 @@ function App() {
       console.error(err);
     }
   };
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -95,45 +96,7 @@ function App() {
 
           <Navbar.Toggle aria-controls="main-navbar" />
           <Navbar.Collapse id="main-navbar">
-            {/* <Nav className="ms-auto">
-              <Nav.Link as={Link} to="/">
-                Home
-              </Nav.Link>
-
-              {data?.currentUser ? (
-                <>
-                  <Nav.Link disabled>
-                    Hello, {data.currentUser.username}
-                  </Nav.Link>
-
-                  <Nav.Link as={Link} to="/projects">
-                    Projects
-                  </Nav.Link>
-
-                  <Nav.Link as={Link} to="/ai-review">
-                    AI Review
-                  </Nav.Link>
-
-                  <Button
-                    variant="outline-light"
-                    size="sm"
-                    onClick={logoutHandler}
-                  >
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Nav.Link as={Link} to="/login">
-                    Login
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/register">
-                    Register
-                  </Nav.Link>
-                </>
-              )}
-            </Nav> */}
-            <Nav className="ms-auto">
+            <Nav className="ms-auto align-items-center gap-2">
               <Nav.Link as={Link} to="/">
                 Home
               </Nav.Link>

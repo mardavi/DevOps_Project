@@ -11,7 +11,13 @@ export default defineConfig({
       exposes: {
         "./ProjectsApp": "./src/App.jsx",
       },
-      shared: ["react", "react-dom", "react-bootstrap"],
+      shared: [
+        "react",
+        "react-dom",
+        "react-bootstrap",
+        "@apollo/client",
+        "graphql",
+      ],
     }),
   ],
   build: {
@@ -21,8 +27,10 @@ export default defineConfig({
   },
   server: {
     port: 5174,
+    strictPort: true,
   },
   preview: {
     port: 5174,
+    strictPort: true,
   },
 });

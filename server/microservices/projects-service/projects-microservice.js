@@ -7,8 +7,8 @@ import fetch from "node-fetch";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import { buildSubgraphSchema } from "@apollo/subgraph";
-
 import { gql } from "graphql-tag";
+
 import { config } from "./config/config.js";
 import connectDB from "./config/mongoose.js";
 import typeDefs from "./graphql/typeDefs.js";
@@ -20,7 +20,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:4000"],
+    origin: ["http://localhost:5173", "http://localhost:4000"],
     credentials: true,
   }),
 );
@@ -39,8 +39,6 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }) => {
       const cookie = req.headers.cookie || "";
-
-      // 🔐Verify session with auth-service
       let user = null;
 
       try {
@@ -52,15 +50,18 @@ app.use(
           },
           body: JSON.stringify({
             query: `
-            query {
+              query {
                 currentUser {
-                id
-                username
+                  id
+                  username
+                  email
+                  role
                 }
-            }
-        `,
+              }
+            `,
           }),
         });
+
         const json = await res.json();
         user = json?.data?.currentUser || null;
       } catch {

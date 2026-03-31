@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "../../.env" });
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -19,51 +20,51 @@ const PORT = process.env.AUTH_PORT || 4001;
 await connectDB();
 
 const server = new ApolloServer({
-    schema: buildSubgraphSchema([
-        {
-            typeDefs,
-            resolvers,
-        },
-    ]),
-    introspection: true,
+  schema: buildSubgraphSchema([
+    {
+      typeDefs,
+      resolvers,
+    },
+  ]),
+  introspection: true,
 });
 
 await server.start();
 
 app.use(
-    cors({
-        origin: process.env.CLIENT_URL,
-        credentials: true,
-    })
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:4000"],
+    credentials: true,
+  }),
 );
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-    res.send("Auth service is running");
+  res.send("Auth service is running");
 });
 
 app.use(
-    "/graphql",
-    sessionMiddleware,
-    expressMiddleware(server, {
-        context: async ({ req, res }) => {
-            let user = null;
+  "/graphql",
+  sessionMiddleware,
+  expressMiddleware(server, {
+    context: async ({ req, res }) => {
+      let user = null;
 
-            try {
-                if (req.session?.userId) {
-                    user = await User.findById(req.session.userId);
-                }
-            } catch (error) {
-                console.error("Context user load error:", error.message);
-            }
+      try {
+        if (req.session?.userId) {
+          user = await User.findById(req.session.userId);
+        }
+      } catch (error) {
+        console.error("Context user load error:", error.message);
+      }
 
-            return { req, res, user };
-        },
-    })
+      return { req, res, user };
+    },
+  }),
 );
 
 app.listen(PORT, () => {
-    console.log(`Auth service running at http://localhost:${PORT}/graphql`);
+  console.log(`Auth service running at http://localhost:${PORT}/graphql`);
 });
