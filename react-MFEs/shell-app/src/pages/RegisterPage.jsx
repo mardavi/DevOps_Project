@@ -56,7 +56,6 @@ function RegisterPage() {
           username,
           email,
           password,
-          role: "developer",
         },
       });
 

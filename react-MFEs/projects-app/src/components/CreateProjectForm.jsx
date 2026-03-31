@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { useMutation } from "@apollo/client/react";
+import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import { CREATE_PROJECT, GET_PROJECTS_BY_USER } from "../graphql/projects";
 
 function CreateProjectForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
 
-  const submitHandler = (e) => {
+  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
+    refetchQueries: [{ query: GET_PROJECTS_BY_USER }],
+  });
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (!title || !description) {
@@ -14,14 +20,26 @@ function CreateProjectForm() {
       return;
     }
 
-    setMessage(`Project "${title}" created locally (mock UI).`);
-    setTitle("");
-    setDescription("");
+    try {
+      await createProject({
+        variables: {
+          title,
+          description,
+        },
+      });
+
+      setMessage(`Project "${title}" created.`);
+      setTitle("");
+      setDescription("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <Form onSubmit={submitHandler}>
       {message && <Alert variant="info">{message}</Alert>}
+      {error && <Alert variant="danger">{error.message}</Alert>}
 
       <Form.Group className="mb-3">
         <Form.Label>Project Title</Form.Label>
@@ -44,8 +62,8 @@ function CreateProjectForm() {
         />
       </Form.Group>
 
-      <Button type="submit" variant="primary">
-        Create Project
+      <Button type="submit" variant="primary" disabled={loading}>
+        {loading ? <Spinner size="sm" animation="border" /> : "Create Project"}
       </Button>
     </Form>
   );
