@@ -63,11 +63,28 @@ import { Routes, Route, Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import { useQuery } from "@apollo/client/react";
+import { GET_CURRENT_USER } from "./graphql/auth";
+import { LOGOUT_USER } from "./graphql/auth";
+import { useMutation } from "@apollo/client/react";
+import { Button } from "react-bootstrap";
 
 const ProjectsApp = lazy(() => import("projects_app/ProjectsApp"));
 const AIReviewApp = lazy(() => import("ai_review_app/AIReviewApp"));
 
 function App() {
+  const { data, loading } = useQuery(GET_CURRENT_USER);
+  const [logoutUser] = useMutation(LOGOUT_USER, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+  });
+
+  const logoutHandler = async () => {
+    try {
+      await logoutUser();
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -78,22 +95,81 @@ function App() {
 
           <Navbar.Toggle aria-controls="main-navbar" />
           <Navbar.Collapse id="main-navbar">
+            {/* <Nav className="ms-auto">
+              <Nav.Link as={Link} to="/">
+                Home
+              </Nav.Link>
+
+              {data?.currentUser ? (
+                <>
+                  <Nav.Link disabled>
+                    Hello, {data.currentUser.username}
+                  </Nav.Link>
+
+                  <Nav.Link as={Link} to="/projects">
+                    Projects
+                  </Nav.Link>
+
+                  <Nav.Link as={Link} to="/ai-review">
+                    AI Review
+                  </Nav.Link>
+
+                  <Button
+                    variant="outline-light"
+                    size="sm"
+                    onClick={logoutHandler}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/login">
+                    Login
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/register">
+                    Register
+                  </Nav.Link>
+                </>
+              )}
+            </Nav> */}
             <Nav className="ms-auto">
               <Nav.Link as={Link} to="/">
                 Home
               </Nav.Link>
-              <Nav.Link as={Link} to="/login">
-                Login
-              </Nav.Link>
-              <Nav.Link as={Link} to="/register">
-                Register
-              </Nav.Link>
+
               <Nav.Link as={Link} to="/projects">
                 Projects
               </Nav.Link>
+
               <Nav.Link as={Link} to="/ai-review">
                 AI Review
               </Nav.Link>
+
+              {data?.currentUser ? (
+                <>
+                  <Nav.Link disabled>
+                    Hello, {data.currentUser.username}
+                  </Nav.Link>
+
+                  <Button
+                    variant="outline-light"
+                    size="sm"
+                    onClick={logoutHandler}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/login">
+                    Login
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/register">
+                    Register
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
