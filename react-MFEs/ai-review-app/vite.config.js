@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "projects_app",
+      name: "ai_review_app",
       filename: "remoteEntry.js",
       exposes: {
-        "./ProjectsApp": "./src/App.jsx",
+        "./AIReviewApp": "./src/App.jsx",
       },
       shared: ["react", "react-dom", "react-bootstrap"],
     }),
@@ -20,9 +20,9 @@ export default defineConfig({
     cssCodeSplit: false,
   },
   server: {
-    port: 5174,
+    port: 5175,
   },
   preview: {
-    port: 5174,
+    port: 5175,
   },
 });
