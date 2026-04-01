@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "scripts": {
+    "start:gateway": "node gateway.js"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^2.13.3",
+    "@apollo/subgraph": "^2.13.3",
+    "graphql-tag": "^2.12.6",
+    "@apollo/server": "^5.5.0",
+    "@as-integrations/express5": "^1.1.2",
+    "express": "^5.2.1",
+    "cors": "^2.8.6",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.3.1",
+    "graphql": "^16.13.2"
+  }
+}

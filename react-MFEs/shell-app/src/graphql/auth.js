@@ -11,6 +11,8 @@ export const REGISTER_USER = gql`
       username
       email
       role
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -22,6 +24,8 @@ export const LOGIN_USER = gql`
       username
       email
       role
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -39,6 +43,8 @@ export const GET_CURRENT_USER = gql`
       username
       email
       role
+      createdAt
+      updatedAt
     }
   }
 `;

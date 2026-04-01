@@ -13,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "@apollo/server": "^5.5.0",
+    "@apollo/subgraph": "^2.13.3",
     "@as-integrations/express5": "^1.1.2",
     "bcrypt": "^6.0.0",
     "connect-mongo": "^6.0.0",
