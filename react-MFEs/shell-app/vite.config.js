@@ -1,3 +1,25 @@
+// import { defineConfig } from "vite";
+// import react from "@vitejs/plugin-react";
+// import federation from "@originjs/vite-plugin-federation";
+
+// export default defineConfig({
+//   plugins: [
+//     react(),
+//     federation({
+//       name: "shellApp",
+//       remotes: {
+//         authApp: "http://localhost:5174/assets/remoteEntry.js",
+//         projectsApp: "http://localhost:5175/assets/remoteEntry.js",
+//       },
+//       shared: ["react", "react-dom", "@apollo/client", "graphql"],
+//     }),
+//   ],
+//   server: {
+//     port: 5173,
+//     strictPort: true,
+//   },
+// });
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
@@ -6,26 +28,16 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "shell_app",
+      name: "shellApp",
       remotes: {
-        projects_app: "http://localhost:5174/assets/remoteEntry.js",
-        ai_review_app: "http://localhost:5175/assets/remoteEntry.js",
+        authApp: "http://localhost:5174/assets/remoteEntry.js",
+        projectsApp: "http://localhost:5175/assets/remoteEntry.js",
+        aiReviewApp: "http://localhost:5176/assets/remoteEntry.js",
       },
-      shared: [
-        "react",
-        "react-dom",
-        "react-bootstrap",
-        "react-router-dom",
-        "@apollo/client",
-        "graphql",
-      ],
+      shared: ["react", "react-dom", "@apollo/client", "graphql"],
     }),
   ],
   server: {
-    port: 5173,
-    strictPort: true,
-  },
-  preview: {
     port: 5173,
     strictPort: true,
   },
