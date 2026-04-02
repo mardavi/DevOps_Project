@@ -1,18 +1,22 @@
 {
   "type": "module",
   "scripts": {
-    "start:gateway": "node gateway.js"
+    "start:gateway": "node gateway.js",
+    "dev": "nodemon gateway.js"
   },
   "dependencies": {
     "@apollo/gateway": "^2.13.3",
-    "@apollo/subgraph": "^2.13.3",
-    "graphql-tag": "^2.12.6",
     "@apollo/server": "^5.5.0",
+    "@apollo/subgraph": "^2.13.3",
     "@as-integrations/express5": "^1.1.2",
-    "express": "^5.2.1",
-    "cors": "^2.8.6",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "graphql": "^16.13.2"
+    "express": "^5.2.1",
+    "graphql": "^16.13.2",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

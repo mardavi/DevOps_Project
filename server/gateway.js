@@ -18,9 +18,15 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
+      "http://localhost:3000", // 🚨 ADDED: Shell App
+      "http://localhost:3001", // ADDED: Projects App (just in case)
+      "http://localhost:3002", // ADDED: AI Review App (just in case)
       "http://localhost:5173",
       "http://localhost:5174",
       "http://localhost:5175",
+      "http://localhost:4001",
+      "http://localhost:4002",
+      "http://localhost:4000",
     ],
     credentials: true,
   }),
