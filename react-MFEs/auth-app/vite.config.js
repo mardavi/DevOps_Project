@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "aiReviewApp",
+      name: "authApp",
       filename: "remoteEntry.js",
       exposes: {
         "./App": "./src/App.jsx",
@@ -15,7 +15,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 5176,
+    port: 5174,
     strictPort: true,
   },
   build: {

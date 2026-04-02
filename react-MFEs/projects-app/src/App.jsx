@@ -1,12 +1,7 @@
-import { Container } from "react-bootstrap";
-import ProjectsDashboard from "./components/ProjectsDashboard";
+import ProjectsDashboard from "./components/ProjectsDashboard.jsx";
 
 function App() {
-  return (
-    <Container className="py-4">
-      <ProjectsDashboard />
-    </Container>
-  );
+  return <ProjectsDashboard />;
 }
 
 export default App;

@@ -6,31 +6,22 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "projects_app",
+      name: "projectsApp",
       filename: "remoteEntry.js",
       exposes: {
-        "./ProjectsApp": "./src/App.jsx",
+        "./App": "./src/App.jsx",
       },
-      shared: [
-        "react",
-        "react-dom",
-        "react-bootstrap",
-        "@apollo/client",
-        "graphql",
-      ],
+      shared: ["react", "react-dom", "@apollo/client", "graphql"],
     }),
   ],
+  server: {
+    port: 5175,
+    strictPort: true,
+  },
   build: {
+    modulePreload: false,
     target: "esnext",
     minify: false,
     cssCodeSplit: false,
-  },
-  server: {
-    port: 5174,
-    strictPort: true,
-  },
-  preview: {
-    port: 5174,
-    strictPort: true,
   },
 });

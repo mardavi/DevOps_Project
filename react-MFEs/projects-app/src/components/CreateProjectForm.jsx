@@ -1,71 +1,93 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
-import { Form, Button, Alert, Spinner } from "react-bootstrap";
-import { CREATE_PROJECT, GET_PROJECTS_BY_USER } from "../graphql/projects";
+import { Form, Button, Card, Alert, Spinner } from "react-bootstrap";
+import { CREATE_PROJECT_MUTATION } from "../graphql/mutations";
 
-function CreateProjectForm() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [message, setMessage] = useState("");
-
-  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
-    refetchQueries: [{ query: GET_PROJECTS_BY_USER }],
+function CreateProjectForm({ onCreated }) {
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
   });
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const [errorMessage, setErrorMessage] = useState("");
 
-    if (!title || !description) {
-      setMessage("Please fill in all fields.");
+  const [createProject, { loading }] = useMutation(CREATE_PROJECT_MUTATION, {
+    onCompleted: (data) => {
+      setForm({ title: "", description: "" });
+      setErrorMessage("");
+      onCreated(data.createProject);
+    },
+    onError: (error) => {
+      setErrorMessage(error.message || "Failed to create project");
+    },
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!form.title.trim() || !form.description.trim()) {
+      setErrorMessage("Title and description are required.");
       return;
     }
 
-    try {
-      await createProject({
-        variables: {
-          title,
-          description,
-        },
-      });
-
-      setMessage(`Project "${title}" created.`);
-      setTitle("");
-      setDescription("");
-    } catch (err) {
-      console.error(err);
-    }
+    await createProject({
+      variables: {
+        title: form.title.trim(),
+        description: form.description.trim(),
+      },
+    });
   };
 
   return (
-    <Form onSubmit={submitHandler}>
-      {message && <Alert variant="info">{message}</Alert>}
-      {error && <Alert variant="danger">{error.message}</Alert>}
+    <Card className="mb-3 border">
+      <Card.Body>
+        <h5 className="mb-3">Create Project</h5>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Project Title</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter project title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </Form.Group>
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-      <Form.Group className="mb-3">
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          placeholder="Enter project description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Form.Group>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-2">
+            <Form.Control
+              name="title"
+              placeholder="Project title"
+              value={form.title}
+              onChange={handleChange}
+            />
+          </Form.Group>
 
-      <Button type="submit" variant="primary" disabled={loading}>
-        {loading ? <Spinner size="sm" animation="border" /> : "Create Project"}
-      </Button>
-    </Form>
+          <Form.Group className="mb-3">
+            <Form.Control
+              as="textarea"
+              rows={2}
+              name="description"
+              placeholder="Project description"
+              value={form.description}
+              onChange={handleChange}
+            />
+          </Form.Group>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <Spinner size="sm" className="me-2" />
+                Creating...
+              </>
+            ) : (
+              "Create"
+            )}
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 }
 
