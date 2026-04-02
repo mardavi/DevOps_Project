@@ -1,87 +1,495 @@
-import { useState } from "react";
+// import { useEffect, useState } from "react";
+// import { useQuery } from "@apollo/client/react";
+// import { Container, Card, Row, Col, Spinner, Alert } from "react-bootstrap";
+// import {
+//   PROJECTS_BY_USER_QUERY,
+//   FEATURE_REQUESTS_QUERY,
+// } from "../graphql/queries";
+// import ProjectList from "./ProjectList.jsx";
+// import CreateProjectForm from "./CreateProjectForm.jsx";
+// import AddFeatureRequestForm from "./AddFeatureRequestForm.jsx";
+// import FeatureRequestList from "./FeatureRequestList.jsx";
+
+// function ProjectsDashboard() {
+//   const [selectedProjectId, setSelectedProjectId] = useState(null);
+//   const [selectedFeatureId, setSelectedFeatureId] = useState(null);
+
+//   const {
+//     data: projectsData,
+//     loading: projectsLoading,
+//     error: projectsError,
+//     refetch: refetchProjects,
+//   } = useQuery(PROJECTS_BY_USER_QUERY, {
+//     fetchPolicy: "network-only",
+//   });
+
+//   const {
+//     data: featureData,
+//     loading: featuresLoading,
+//     error: featuresError,
+//     refetch: refetchFeatures,
+//   } = useQuery(FEATURE_REQUESTS_QUERY, {
+//     variables: { projectId: selectedProjectId },
+//     skip: !selectedProjectId,
+//     fetchPolicy: "network-only",
+//   });
+
+//   const projects = projectsData?.projectsByUser || [];
+//   const features = featureData?.featureRequests || [];
+
+//   const selectedProject =
+//     projects.find((project) => project.id === selectedProjectId) || null;
+
+//   const selectedFeature =
+//     features.find((feature) => feature.id === selectedFeatureId) || null;
+
+//   useEffect(() => {
+//     setSelectedFeatureId(null);
+//   }, [selectedProjectId]);
+
+//   const handleProjectCreated = async (newProject) => {
+//     await refetchProjects();
+//     setSelectedProjectId(newProject.id);
+//   };
+
+//   const handleFeatureCreated = async (newFeature) => {
+//     await refetchFeatures();
+//     setSelectedFeatureId(newFeature.id);
+//   };
+
+//   const formatDate = (value) => {
+//     if (!value) return "N/A";
+
+//     const parsedDate = new Date(value);
+
+//     if (Number.isNaN(parsedDate.getTime())) {
+//       return "N/A";
+//     }
+
+//     return parsedDate.toLocaleString();
+//   };
+
+//   return (
+//     <Container className="py-4">
+//       <Card className="shadow-sm">
+//         <Card.Body>
+//           <h1 className="mb-3">Projects App</h1>
+//           <p className="text-muted mb-4">
+//             Bit 6 test: manage projects and feature requests from the backend.
+//           </p>
+
+//           {projectsLoading && (
+//             <div className="d-flex align-items-center gap-2">
+//               <Spinner animation="border" size="sm" />
+//               <span>Loading projects...</span>
+//             </div>
+//           )}
+
+//           {projectsError && (
+//             <Alert variant="danger">
+//               <div className="fw-bold mb-2">Could not load projects</div>
+//               <div className="small mb-3">{projectsError.message}</div>
+//               <button
+//                 className="btn btn-dark btn-sm"
+//                 onClick={() => refetchProjects()}
+//               >
+//                 Try again
+//               </button>
+//             </Alert>
+//           )}
+
+//           {!projectsLoading && !projectsError && (
+//             <Row className="g-4">
+//               <Col lg={4}>
+//                 <CreateProjectForm onCreated={handleProjectCreated} />
+
+//                 <ProjectList
+//                   projects={projects}
+//                   selectedProjectId={selectedProjectId}
+//                   onSelectProject={setSelectedProjectId}
+//                 />
+//               </Col>
+
+//               <Col lg={4}>
+//                 <Card className="border">
+//                   <Card.Body>
+//                     <h4 className="mb-3">Selected Project</h4>
+
+//                     {!selectedProject && (
+//                       <p className="text-muted mb-0">
+//                         Select a project from the left to view its details.
+//                       </p>
+//                     )}
+
+//                     {selectedProject && (
+//                       <>
+//                         <h5>{selectedProject.title}</h5>
+//                         <p className="mb-2">{selectedProject.description}</p>
+//                         <div className="small text-muted">
+//                           <div>
+//                             <strong>Owner:</strong> {selectedProject.owner}
+//                           </div>
+//                           <div>
+//                             <strong>Created:</strong>{" "}
+//                             {formatDate(selectedProject.createdAt)}
+//                           </div>
+//                           <div>
+//                             <strong>Updated:</strong>{" "}
+//                             {formatDate(selectedProject.updatedAt)}
+//                           </div>
+//                         </div>
+//                       </>
+//                     )}
+//                   </Card.Body>
+//                 </Card>
+
+//                 <AddFeatureRequestForm
+//                   projectId={selectedProjectId}
+//                   onCreated={handleFeatureCreated}
+//                 />
+//               </Col>
+
+//               <Col lg={4}>
+//                 {selectedProjectId && featuresLoading && (
+//                   <div className="d-flex align-items-center gap-2 mb-3">
+//                     <Spinner animation="border" size="sm" />
+//                     <span>Loading feature requests...</span>
+//                   </div>
+//                 )}
+
+//                 {featuresError && (
+//                   <Alert variant="danger">
+//                     <div className="fw-bold mb-2">
+//                       Could not load feature requests
+//                     </div>
+//                     <div className="small mb-3">{featuresError.message}</div>
+//                     <button
+//                       className="btn btn-dark btn-sm"
+//                       onClick={() => refetchFeatures()}
+//                     >
+//                       Try again
+//                     </button>
+//                   </Alert>
+//                 )}
+
+//                 {!featuresError && (
+//                   <FeatureRequestList
+//                     features={features}
+//                     selectedFeatureId={selectedFeatureId}
+//                     onSelectFeature={setSelectedFeatureId}
+//                   />
+//                 )}
+
+//                 <Card className="mt-3 border">
+//                   <Card.Body>
+//                     <h5 className="mb-3">Selected Feature</h5>
+
+//                     {!selectedFeature && (
+//                       <p className="text-muted mb-0">
+//                         Select a feature request to view its details.
+//                       </p>
+//                     )}
+
+//                     {selectedFeature && (
+//                       <>
+//                         <h6>{selectedFeature.title}</h6>
+//                         <p className="mb-2">{selectedFeature.description}</p>
+//                         <div className="small text-muted">
+//                           <div>
+//                             <strong>Status:</strong>{" "}
+//                             {selectedFeature.status || "open"}
+//                           </div>
+//                           <div>
+//                             <strong>Created:</strong>{" "}
+//                             {formatDate(selectedFeature.createdAt)}
+//                           </div>
+//                           <div>
+//                             <strong>Updated:</strong>{" "}
+//                             {formatDate(selectedFeature.updatedAt)}
+//                           </div>
+//                         </div>
+//                       </>
+//                     )}
+//                   </Card.Body>
+//                 </Card>
+//               </Col>
+//             </Row>
+//           )}
+//         </Card.Body>
+//       </Card>
+//     </Container>
+//   );
+// }
+
+// export default ProjectsDashboard;
+
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
+import { Container, Card, Row, Col, Spinner, Alert } from "react-bootstrap";
 import {
-  Row,
-  Col,
-  Card,
-  ListGroup,
-  Alert,
-  Spinner,
-  Button,
-} from "react-bootstrap";
-import { GET_PROJECTS_BY_USER } from "../graphql/projects";
-import CreateProjectForm from "./CreateProjectForm";
-import ProjectDetails from "./ProjectDetails";
+  PROJECTS_BY_USER_QUERY,
+  FEATURE_REQUESTS_QUERY,
+  DRAFTS_BY_FEATURE_QUERY,
+} from "../graphql/queries";
+import ProjectList from "./ProjectList.jsx";
+import CreateProjectForm from "./CreateProjectForm.jsx";
+import AddFeatureRequestForm from "./AddFeatureRequestForm.jsx";
+import FeatureRequestList from "./FeatureRequestList.jsx";
+import DraftHistory from "./DraftHistory.jsx";
+import SubmitDraftForm from "./SubmitDraftForm.jsx";
 
 function ProjectsDashboard() {
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedFeatureId, setSelectedFeatureId] = useState(null);
 
-  const { data, loading, error } = useQuery(GET_PROJECTS_BY_USER, {
+  const {
+    data: projectsData,
+    loading: projectsLoading,
+    error: projectsError,
+    refetch: refetchProjects,
+  } = useQuery(PROJECTS_BY_USER_QUERY, {
     fetchPolicy: "network-only",
   });
 
-  const projects = data?.projectsByUser || [];
+  const {
+    data: featureData,
+    loading: featuresLoading,
+    error: featuresError,
+    refetch: refetchFeatures,
+  } = useQuery(FEATURE_REQUESTS_QUERY, {
+    variables: { projectId: selectedProjectId },
+    skip: !selectedProjectId,
+    fetchPolicy: "network-only",
+  });
+
+  const {
+    data: draftData,
+    loading: draftsLoading,
+    error: draftsError,
+    refetch: refetchDrafts,
+  } = useQuery(DRAFTS_BY_FEATURE_QUERY, {
+    variables: { featureId: selectedFeatureId },
+    skip: !selectedFeatureId,
+    fetchPolicy: "network-only",
+  });
+
+  const projects = projectsData?.projectsByUser || [];
+  const features = featureData?.featureRequests || [];
+  const drafts = draftData?.draftsByFeature || [];
+
+  const selectedProject =
+    projects.find((project) => project.id === selectedProjectId) || null;
+
+  const selectedFeature =
+    features.find((feature) => feature.id === selectedFeatureId) || null;
+
+  useEffect(() => {
+    setSelectedFeatureId(null);
+  }, [selectedProjectId]);
+
+  const handleProjectCreated = async (newProject) => {
+    await refetchProjects();
+    setSelectedProjectId(newProject.id);
+  };
+
+  const handleFeatureCreated = async (newFeature) => {
+    await refetchFeatures();
+    setSelectedFeatureId(newFeature.id);
+  };
+
+  const handleDraftCreated = async () => {
+    await refetchDrafts();
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "N/A";
+
+    const parsedDate = new Date(value);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return "N/A";
+    }
+
+    return parsedDate.toLocaleString();
+  };
 
   return (
-    <>
-      <h2 className="mb-4">Projects App</h2>
+    <Container className="py-4">
+      <Card className="shadow-sm">
+        <Card.Body>
+          <h1 className="mb-3">Projects App</h1>
+          <p className="text-muted mb-4">
+            Bit 7 test: manage projects, feature requests, and drafts from the
+            backend.
+          </p>
 
-      <Row className="g-4">
-        <Col md={4}>
-          <Card className="p-3 mb-4">
-            <h4>Create Project</h4>
-            <CreateProjectForm />
-          </Card>
-
-          <Card className="p-3">
-            <h4>My Projects</h4>
-
-            {loading && <Spinner animation="border" size="sm" />}
-            {error && (
-              <Alert variant="warning" className="mt-2">
-                Could not load projects yet. This is expected until the gateway
-                is running.
-              </Alert>
-            )}
-
-            {!loading && !error && projects.length === 0 && (
-              <Alert variant="secondary" className="mt-2">
-                No projects found yet.
-              </Alert>
-            )}
-
-            {!loading && !error && projects.length > 0 && (
-              <ListGroup className="mt-2">
-                {projects.map((project) => (
-                  <ListGroup.Item
-                    key={project.id}
-                    action
-                    active={selectedProject?.id === project.id}
-                    onClick={() => setSelectedProject(project)}
-                  >
-                    <div className="fw-bold">{project.title}</div>
-                    <small>{project.description}</small>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            )}
-          </Card>
-        </Col>
-
-        <Col md={8}>
-          {selectedProject ? (
-            <ProjectDetails project={selectedProject} />
-          ) : (
-            <Card className="p-4 text-center">
-              <h4>No project selected</h4>
-              <p className="mb-0">
-                Choose a project from the left to view details.
-              </p>
-            </Card>
+          {projectsLoading && (
+            <div className="d-flex align-items-center gap-2">
+              <Spinner animation="border" size="sm" />
+              <span>Loading projects...</span>
+            </div>
           )}
-        </Col>
-      </Row>
-    </>
+
+          {projectsError && (
+            <Alert variant="danger">
+              <div className="fw-bold mb-2">Could not load projects</div>
+              <div className="small mb-3">{projectsError.message}</div>
+              <button
+                className="btn btn-dark btn-sm"
+                onClick={() => refetchProjects()}
+              >
+                Try again
+              </button>
+            </Alert>
+          )}
+
+          {!projectsLoading && !projectsError && (
+            <Row className="g-4">
+              <Col lg={4}>
+                <CreateProjectForm onCreated={handleProjectCreated} />
+
+                <ProjectList
+                  projects={projects}
+                  selectedProjectId={selectedProjectId}
+                  onSelectProject={setSelectedProjectId}
+                />
+              </Col>
+
+              <Col lg={4}>
+                <Card className="border">
+                  <Card.Body>
+                    <h4 className="mb-3">Selected Project</h4>
+
+                    {!selectedProject && (
+                      <p className="text-muted mb-0">
+                        Select a project from the left to view its details.
+                      </p>
+                    )}
+
+                    {selectedProject && (
+                      <>
+                        <h5>{selectedProject.title}</h5>
+                        <p className="mb-2">{selectedProject.description}</p>
+                        <div className="small text-muted">
+                          <div>
+                            <strong>Owner:</strong> {selectedProject.owner}
+                          </div>
+                          <div>
+                            <strong>Created:</strong>{" "}
+                            {formatDate(selectedProject.createdAt)}
+                          </div>
+                          <div>
+                            <strong>Updated:</strong>{" "}
+                            {formatDate(selectedProject.updatedAt)}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </Card.Body>
+                </Card>
+
+                <AddFeatureRequestForm
+                  projectId={selectedProjectId}
+                  onCreated={handleFeatureCreated}
+                />
+              </Col>
+
+              <Col lg={4}>
+                {selectedProjectId && featuresLoading && (
+                  <div className="d-flex align-items-center gap-2 mb-3">
+                    <Spinner animation="border" size="sm" />
+                    <span>Loading feature requests...</span>
+                  </div>
+                )}
+
+                {featuresError && (
+                  <Alert variant="danger">
+                    <div className="fw-bold mb-2">
+                      Could not load feature requests
+                    </div>
+                    <div className="small mb-3">{featuresError.message}</div>
+                    <button
+                      className="btn btn-dark btn-sm"
+                      onClick={() => refetchFeatures()}
+                    >
+                      Try again
+                    </button>
+                  </Alert>
+                )}
+
+                {!featuresError && (
+                  <FeatureRequestList
+                    features={features}
+                    selectedFeatureId={selectedFeatureId}
+                    onSelectFeature={setSelectedFeatureId}
+                  />
+                )}
+
+                <Card className="mt-3 border">
+                  <Card.Body>
+                    <h5 className="mb-3">Selected Feature</h5>
+
+                    {!selectedFeature && (
+                      <p className="text-muted mb-0">
+                        Select a feature request to view its details.
+                      </p>
+                    )}
+
+                    {selectedFeature && (
+                      <>
+                        <h6>{selectedFeature.title}</h6>
+                        <p className="mb-2">{selectedFeature.description}</p>
+                        <div className="small text-muted">
+                          <div>
+                            <strong>Status:</strong>{" "}
+                            {selectedFeature.status || "open"}
+                          </div>
+                          <div>
+                            <strong>Created:</strong>{" "}
+                            {formatDate(selectedFeature.createdAt)}
+                          </div>
+                          <div>
+                            <strong>Updated:</strong>{" "}
+                            {formatDate(selectedFeature.updatedAt)}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </Card.Body>
+                </Card>
+
+                <SubmitDraftForm
+                  featureId={selectedFeatureId}
+                  onCreated={handleDraftCreated}
+                />
+
+                {selectedFeatureId && draftsLoading && (
+                  <div className="d-flex align-items-center gap-2 mt-3">
+                    <Spinner animation="border" size="sm" />
+                    <span>Loading drafts...</span>
+                  </div>
+                )}
+
+                {draftsError && (
+                  <Alert variant="danger" className="mt-3">
+                    <div className="fw-bold mb-2">Could not load drafts</div>
+                    <div className="small mb-3">{draftsError.message}</div>
+                    <button
+                      className="btn btn-dark btn-sm"
+                      onClick={() => refetchDrafts()}
+                    >
+                      Try again
+                    </button>
+                  </Alert>
+                )}
+
+                {!draftsError && <DraftHistory drafts={drafts} />}
+              </Col>
+            </Row>
+          )}
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

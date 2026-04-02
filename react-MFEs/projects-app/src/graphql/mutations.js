@@ -1,19 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_PROJECTS_BY_USER = gql`
-  query GetProjectsByUser {
-    projectsByUser {
-      id
-      title
-      description
-      owner
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const CREATE_PROJECT = gql`
+export const CREATE_PROJECT_MUTATION = gql`
   mutation CreateProject($title: String!, $description: String!) {
     createProject(title: $title, description: $description) {
       id
@@ -26,44 +13,39 @@ export const CREATE_PROJECT = gql`
   }
 `;
 
-export const ADD_FEATURE_REQUEST = gql`
+export const ADD_FEATURE_REQUEST_MUTATION = gql`
   mutation AddFeatureRequest(
     $projectId: ID!
     $title: String!
     $description: String!
+    $status: String
   ) {
     addFeatureRequest(
       projectId: $projectId
       title: $title
       description: $description
+      status: $status
     ) {
       id
+      projectId
       title
       description
       status
       createdAt
+      updatedAt
     }
   }
 `;
-
-export const SUBMIT_DRAFT = gql`
-  mutation SubmitDraft($featureId: ID!, $content: String!) {
-    submitDraft(featureId: $featureId, content: $content) {
+export const SUBMIT_DRAFT_MUTATION = gql`
+  mutation SubmitDraft($featureId: ID!, $content: String!, $version: Int) {
+    submitDraft(featureId: $featureId, content: $content, version: $version) {
       id
+      featureId
+      author
       content
       version
       createdAt
-    }
-  }
-`;
-
-export const GET_DRAFTS_BY_FEATURE = gql`
-  query GetDraftsByFeature($featureId: ID!) {
-    draftsByFeature(featureId: $featureId) {
-      id
-      content
-      version
-      createdAt
+      updatedAt
     }
   }
 `;
