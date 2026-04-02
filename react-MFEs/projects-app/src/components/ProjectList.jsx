@@ -11,8 +11,7 @@ function ProjectList({ projects, selectedProjectId, onSelectProject }) {
 
         {projects.length === 0 ? (
           <p className="text-muted mb-0">
-            No projects found yet. In the next bit, we will add a create project
-            form.
+            No projects yet. Create your first project to get started.
           </p>
         ) : (
           <ListGroup>

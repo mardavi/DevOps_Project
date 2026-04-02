@@ -129,7 +129,7 @@ function AuthPage() {
         <Card.Body>
           <h1 className="mb-3">DevPilot 2026 Auth</h1>
           <p className="text-muted mb-4">
-            Bit 2 test: register and log in through the gateway.
+            Access your developer workspace by logging in or registering.
           </p>
 
           <Nav
