@@ -1,7 +1,7 @@
 import ProjectsDashboard from "./components/ProjectsDashboard.jsx";
 
-function App() {
-  return <ProjectsDashboard />;
+function App({ currentUser }) {
+  return <ProjectsDashboard currentUser={currentUser} />;
 }
 
 export default App;

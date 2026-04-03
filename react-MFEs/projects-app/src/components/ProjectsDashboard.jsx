@@ -13,7 +13,7 @@ import FeatureRequestList from "./FeatureRequestList.jsx";
 import DraftHistory from "./DraftHistory.jsx";
 import SubmitDraftForm from "./SubmitDraftForm.jsx";
 
-function ProjectsDashboard() {
+const ProjectsDashboard = ({ currentUser }) => {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedFeatureId, setSelectedFeatureId] = useState(null);
 
@@ -146,7 +146,9 @@ function ProjectsDashboard() {
                         <p className="mb-2">{selectedProject.description}</p>
                         <div className="small text-muted">
                           <div>
-                            <strong>Owner:</strong> {selectedProject.owner}
+                            {/* <strong>Owner:</strong> {selectedProject.owner} */}
+                            <strong>Owner:</strong>{" "}
+                            {currentUser?.username || "Current User"}
                           </div>
                           <div>
                             <strong>Created:</strong>{" "}
@@ -265,6 +267,6 @@ function ProjectsDashboard() {
       </Card>
     </Container>
   );
-}
+};
 
 export default ProjectsDashboard;

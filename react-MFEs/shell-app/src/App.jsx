@@ -142,7 +142,9 @@ function App() {
             </Card>
           }
         >
-          {activeView === "projects" && <ProjectsApp />}
+          {activeView === "projects" && (
+            <ProjectsApp currentUser={currentUser} />
+          )}
           {activeView === "ai-review" && <AiReviewApp />}
         </Suspense>
       </Container>
