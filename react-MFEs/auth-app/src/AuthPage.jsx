@@ -87,10 +87,14 @@ function AuthPage() {
     setMessage("");
     setErrorMessage("");
 
-    if (!loginForm.email.trim() || !loginForm.password.trim()) {
-      setErrorMessage("Email and password are required.");
-      return;
-    }
+  if (!loginForm.email.trim() || !loginForm.password.trim()) {
+  setErrorMessage("Email and password are required.");
+  return;
+}
+  if (loginForm.password.length < 6) {
+  setErrorMessage("Password must be at least 6 characters.");
+  return;
+}
 
     await login({
       variables: {
