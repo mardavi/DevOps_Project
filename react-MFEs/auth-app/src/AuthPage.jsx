@@ -36,8 +36,8 @@ function AuthPage() {
     },
     onError: (error) => {
       setMessage("");
-      setErrorMessage(error.message || "Login failed");
-    },
+      setErrorMessage(error.message || "Login failed. Please check your credentials and try again.");
+},
   });
 
   const [register, { loading: registerLoading }] = useMutation(
