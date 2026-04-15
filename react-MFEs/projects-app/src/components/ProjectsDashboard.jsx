@@ -93,6 +93,7 @@ const ProjectsDashboard = ({ currentUser }) => {
       <Card className="shadow-sm">
         <Card.Body>
           <h1 className="mb-3">Projects App</h1>
+          <p className="text-muted">Total Projects: {projects.length}</p>
           <p className="text-muted mb-4">
             Manage your projects, feature requests, and draft submissions.
           </p>
