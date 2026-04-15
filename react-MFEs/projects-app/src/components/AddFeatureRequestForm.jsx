@@ -52,6 +52,11 @@ function AddFeatureRequestForm({ projectId, onCreated }) {
       return;
     }
 
+    if (form.title.trim().length < 3) {
+      setErrorMessage("Title must be at least 3 characters.");
+      return;
+    } 
+
     await addFeatureRequest({
       variables: {
         projectId,
