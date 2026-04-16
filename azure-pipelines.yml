@@ -21,7 +21,7 @@ stages:
           - task: SonarCloudPrepare@3
             displayName: 'Prepare SonarCloud Analysis'
             inputs:
-              SonarCloud: 'SonarCloudConnection'
+              SonarCloud: 'sonarqube'
               organization: 'bacanit'
               scannerMode: 'CLI'
               configMode: 'manual'
