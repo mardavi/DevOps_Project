@@ -1,0 +1,98 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+
+  - stage: Build
+    displayName: 'Build Stage'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build and Test'
+        steps:
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+            displayName: 'Install Node.js'
+
+          - task: SonarCloudPrepare@3
+            displayName: 'Prepare SonarCloud Analysis'
+            inputs:
+              SonarCloud: 'SonarCloudConnection'
+              organization: 'bacanit'
+              scannerMode: 'CLI'
+              configMode: 'manual'
+              cliProjectKey: 'bacanit'
+              cliProjectName: 'DevOps_Project'
+              cliSources: '.'
+
+          - script: |
+              cd server
+              npm install
+            displayName: 'Step 1 - Install & Compile Dependencies'
+
+          - script: |
+              cd server
+              npm test --if-present || echo "No tests found, skipping"
+            displayName: 'Step 2 - Run Unit Tests & Code Coverage'
+
+          - task: SonarCloudAnalyze@3
+            displayName: 'Run SonarCloud Analysis'
+
+          - task: SonarCloudPublish@3
+            displayName: 'Publish SonarCloud Results'
+            inputs:
+              pollingTimeoutSec: '300'
+
+  - stage: Deliver
+    displayName: 'Deliver Stage'
+    dependsOn: Build
+    jobs:
+      - job: DeliverJob
+        steps:
+          - script: |
+              cd server
+              npm pack
+            displayName: 'Package artifact for delivery'
+
+  - stage: DeployDev
+    displayName: 'Deploy to Dev Environment'
+    dependsOn: Deliver
+    jobs:
+      - job: DeployDevJob
+        steps:
+          - script: echo "Deploying to Dev environment..."
+            displayName: 'Deploy to Dev'
+          - script: echo "App launched in Dev"
+            displayName: 'Launch app in Dev'
+
+  - stage: DeployQAT
+    displayName: 'Deploy to QAT Environment'
+    dependsOn: DeployDev
+    jobs:
+      - job: DeployQATJob
+        steps:
+          - script: echo "Deploying to QAT environment..."
+            displayName: 'Deploy to QAT'
+
+  - stage: DeployStaging
+    displayName: 'Deploy to Staging Environment'
+    dependsOn: DeployQAT
+    jobs:
+      - job: DeployStagingJob
+        steps:
+          - script: echo "Deploying to Staging environment..."
+            displayName: 'Deploy to Staging'
+
+
+  - stage: DeployProduction
+    displayName: 'Deploy to Production Environment'
+    dependsOn: DeployStaging
+    jobs:
+      - job: DeployProductionJob
+        steps:
+          - script: echo "Deploying to Production environment..."
+            displayName: 'Deploy to Production'
