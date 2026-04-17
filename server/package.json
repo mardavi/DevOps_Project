@@ -1,4 +1,6 @@
 {
+  "name": "devops-project-server",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "start:gateway": "node gateway.js",
